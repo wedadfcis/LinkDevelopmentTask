@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Link Development Task</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="explore">Explore</string>
+    <string name="liveChat">Live Chat</string>
+    <string name="gallery">Gallery</string>
+    <string name="wishList">Wish List</string>
+    <string name="emagazine">E-Magazine</string>
+    <string name="profile_name">Tony Roshody</string>
+    <string name="welcome">Welcome</string>>
+    <string name="by">By %s </string>
+    <string name="open_website">Open Website</string>
+    <!-- Network Errors-->
+    <string name="networkError">Oh! You are not connected to a wifi or cellular data network. Please connect and try again</string>
+    <string name="networkErrorCode">NO_INTERNET_CONNECTION</string>
+    <string name="unknownError">Something went wrong!</string>
+    <string name="requestTimeOutError">Oooops! We couldn’t capture your request in time. Please try again.</string>
+    <string name="errorCodeMalformedJson">MALFORMED_JSON</string>
+    <string name="responseMalformedJson">Oops! We hit an error. Try again later.</string>
+    <string name="errorCodeConnectFailed">Connection failed</string>
+    <string name="responseConnectFailed">Oops! Connection timeout.</string>
+    <string name="fail_to_open_url">"No application can handle this request."
+                                + " Please install a webbrowser"</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
