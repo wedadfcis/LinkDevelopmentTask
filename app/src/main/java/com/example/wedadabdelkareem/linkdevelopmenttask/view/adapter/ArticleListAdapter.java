@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.ArticleViewHolder> implements Filterable {
+public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.ArticleViewHolder>  {
 
     private List< Article> articleList ;
     private final ArticleClickCallBack articleClickCallBack;
@@ -72,41 +72,6 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         return articleList.size();
         else
             return 0;
-    }
-
-    @Override
-    public Filter getFilter() {
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence charSequence) {
-                String charString = charSequence.toString();
-                if (charString.isEmpty()) {
-                    articleList = articleList;
-                } else {
-                    List<Article> filteredList = new ArrayList<>();
-                    for (Article row : articleList) {
-                        // filter with author name and publish at
-                        if (row.getTitle().toLowerCase().contains(charString.toLowerCase())
-                                || row.getAuthor().toLowerCase().contains(charString.toLowerCase())
-                                || row.getPublishedAt().contains(charString.toLowerCase())) {
-                            filteredList.add(row);
-                        }
-                    }
-
-                    articleList = filteredList;
-                }
-
-                FilterResults filterResults = new FilterResults();
-                filterResults.values = articleList;
-                return filterResults;
-            }
-
-            @Override
-            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                articleList = (ArrayList<Article>) filterResults.values;
-                notifyDataSetChanged();
-            }
-        };
     }
 
     static class ArticleViewHolder extends RecyclerView.ViewHolder {
