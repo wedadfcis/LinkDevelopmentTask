@@ -34,19 +34,20 @@ public class ArticleDetailsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        articleDetailsViewModel = ViewModelProviders.of(this).get(ArticleDetailsViewModel.class);
-        observeViewModel(articleDetailsViewModel);
+
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
+        observeViewModel();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        articleDetailsViewModel = ViewModelProviders.of(this).get(ArticleDetailsViewModel.class);
         // Inflate the layout for this fragment
         if (getArguments().getParcelable(Constants.ARTICLE) != null) {
             //set at view model
@@ -58,13 +59,13 @@ public class ArticleDetailsFragment extends Fragment {
         return (View) fragmentArticleDetailsBinding.getRoot();
     }
 
-    public void observeViewModel(final ArticleDetailsViewModel detailsViewModel) {
-        detailsViewModel.getIsClickOpenWebsite().observe(this, new Observer<Boolean>() {
+    public void observeViewModel() {
+        articleDetailsViewModel.getIsClickOpenWebsite().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean aBoolean) {
                 if (aBoolean == true) {
                     try {
-                        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(detailsViewModel.getSelectedArticle().getUrl()));
+                        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(articleDetailsViewModel.getSelectedArticle().getUrl()));
                         startActivity(myIntent);
                     } catch (ActivityNotFoundException e) {
                         Toast.makeText(getActivity(), "fail_to_open_url", Toast.LENGTH_LONG).show();
