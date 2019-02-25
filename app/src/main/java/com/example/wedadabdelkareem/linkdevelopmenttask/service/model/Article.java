@@ -26,20 +26,6 @@ public class Article implements Parcelable {
     public Article() {
     }
 
-    @BindingAdapter({"bind:imageUrl"})
-    public static void loadImage(ImageView view, String imageUrl) {
-        Picasso.with(view.getContext())
-                .load(imageUrl)
-                .placeholder(R.drawable.placeholder)
-                .into(view);
-    }
-
-    @BindingAdapter({"bind:date"})
-    public static void getDate(TextView textView, String timeStr) {
-        textView.setText(timeStr.substring(0, timeStr.indexOf("T")));
-
-    }
-
     public String getAuthor() {
         return author;
     }

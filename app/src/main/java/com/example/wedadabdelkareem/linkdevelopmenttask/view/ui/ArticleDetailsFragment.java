@@ -1,31 +1,45 @@
 package com.example.wedadabdelkareem.linkdevelopmenttask.view.ui;
 
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.wedadabdelkareem.linkdevelopmenttask.databinding.FragmentArticleDetailsBinding;
 import com.example.wedadabdelkareem.linkdevelopmenttask.R;
-import com.example.wedadabdelkareem.linkdevelopmenttask.service.model.Article;
-import com.example.wedadabdelkareem.linkdevelopmenttask.util.Constants;
+import com.example.wedadabdelkareem.linkdevelopmenttask.view.adapter.ImageAndDateLoader;
 import com.example.wedadabdelkareem.linkdevelopmenttask.viewmodel.ArticleDetailsViewModel;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 
-public class ArticleDetailsFragment extends Fragment {
-    private FragmentArticleDetailsBinding fragmentArticleDetailsBinding;
-    private ArticleDetailsViewModel articleDetailsViewModel;
+
+public class ArticleDetailsFragment extends BaseFragment {
+     private ArticleDetailsViewModel articleDetailsViewModel;
+    @BindView(R.id.article_image)
+    ImageView articleImage;
+    @BindView(R.id.article_title)
+    TextView articleTitle;
+    @BindView(R.id.author_name)
+    TextView authorName;
+    @BindView(R.id.description)
+    TextView articleDescription;
+    @BindView(R.id.publish_date)
+    TextView publishAt;
+    @BindView(R.id.open_website)
+    Button openWebsiteBtn;
+    private Unbinder unbinder;
 
     public ArticleDetailsFragment() {
         // Required empty public constructor
@@ -40,41 +54,35 @@ public class ArticleDetailsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
-        observeViewModel();
+        articleDetailsViewModel = ViewModelProviders.of(getActivity()).get(ArticleDetailsViewModel.class);
+        bindData();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        articleDetailsViewModel = ViewModelProviders.of(this).get(ArticleDetailsViewModel.class);
-        // Inflate the layout for this fragment
-        if (getArguments().getParcelable(Constants.ARTICLE) != null) {
-            //set at view model
-            articleDetailsViewModel.setSelectedArticle((Article) getArguments().getParcelable(Constants.ARTICLE));
-        }
-        fragmentArticleDetailsBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_article_details, container, false);
-        fragmentArticleDetailsBinding.setArticle(articleDetailsViewModel.getSelectedArticle());
-        fragmentArticleDetailsBinding.setOpenwebsite(articleDetailsViewModel);
-        return (View) fragmentArticleDetailsBinding.getRoot();
+
+        View view = inflater.inflate(R.layout.fragment_article_details, container,false);
+        unbinder = ButterKnife.bind(this, view);
+        return view;
     }
 
-    public void observeViewModel() {
-        articleDetailsViewModel.getIsClickOpenWebsite().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean aBoolean) {
-                if (aBoolean == true) {
-                    try {
-                        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(articleDetailsViewModel.getSelectedArticle().getUrl()));
-                        startActivity(myIntent);
-                    } catch (ActivityNotFoundException e) {
-                        Toast.makeText(getActivity(), "fail_to_open_url", Toast.LENGTH_LONG).show();
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-
+    public void bindData() {
+        //set article data
+        ImageAndDateLoader.loadImage(articleImage,articleDetailsViewModel.getSelectedArticle().getUrlToImage());
+        articleTitle.setText(articleDetailsViewModel.getSelectedArticle().getTitle());
+        articleDescription.setText(articleDetailsViewModel.getSelectedArticle().getDescription());
+        ImageAndDateLoader.loadDate(publishAt,articleDetailsViewModel.getSelectedArticle().getPublishedAt());
+    }
+    @OnClick(R.id.open_website)
+    void openWebsite() {
+        try {
+            Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(articleDetailsViewModel.getSelectedArticle().getUrl()));
+            startActivity(myIntent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(getActivity(), getActivity().getString(R.string.fail_open_url), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -86,6 +94,17 @@ public class ArticleDetailsFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    @Override
+    public void filterData(String query) {
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
 }

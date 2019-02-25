@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -16,14 +17,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ArticleListViewModel extends AndroidViewModel {
-    private final LiveData<ArticleResponse> articleListObservable;
+    private  LiveData<ArticleResponse> articleListObservable;
     private MutableLiveData<List<Article>> filterArticleList;
     public ArticleListViewModel(@NonNull Application application) {
         super(application);
-        this.articleListObservable = ArticleRepository.getInstance().getArticleList(application);
     }
 
-    public LiveData<ArticleResponse> getArticleListObservable() {
+    public LiveData<ArticleResponse> getArticleListObservable(Context context) {
+        ArticleRepository articleRepository = new ArticleRepository();
+         articleListObservable = articleRepository.getArticleList(context);
         return articleListObservable;
     }
 
@@ -31,16 +33,18 @@ public class ArticleListViewModel extends AndroidViewModel {
         filterArticleList = new MutableLiveData<>();
         List<Article> filteredList = new ArrayList<>();
         filteredList.clear();
-     if(!query.isEmpty()||!query.equals("") ) {
-         for (Article currentArticle : articleListObservable.getValue().getArticles()) {
-             // filter with author name
-             if (currentArticle.getAuthor().toLowerCase().contains(query)) {
-                 filteredList.add(currentArticle);
-             }
-         }
-     }else {
-         filteredList = articleListObservable.getValue().getArticles();
-     }
+      if(articleListObservable.getValue().getArticles().size()>0) {
+          if (!query.isEmpty() || !query.equals("")) {
+              for (Article currentArticle : articleListObservable.getValue().getArticles()) {
+                  // filter with author name
+                  if (currentArticle.getAuthor().toLowerCase().contains(query)) {
+                      filteredList.add(currentArticle);
+                  }
+              }
+          } else {
+              filteredList = articleListObservable.getValue().getArticles();
+          }
+      }
      filterArticleList.setValue(filteredList);
      return filterArticleList;
 }

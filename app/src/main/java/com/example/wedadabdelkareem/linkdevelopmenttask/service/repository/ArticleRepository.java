@@ -19,6 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import com.example.wedadabdelkareem.linkdevelopmenttask.R;
 import com.example.wedadabdelkareem.linkdevelopmenttask.service.ApiConstants;
 import com.example.wedadabdelkareem.linkdevelopmenttask.service.ArticleService;
+import com.example.wedadabdelkareem.linkdevelopmenttask.service.RetrofitClient;
 import com.example.wedadabdelkareem.linkdevelopmenttask.service.model.ArticleResponse;
 import com.example.wedadabdelkareem.linkdevelopmenttask.util.Constants;
 import com.google.gson.stream.MalformedJsonException;
@@ -26,35 +27,13 @@ import com.google.gson.stream.MalformedJsonException;
 
 public class ArticleRepository {
 
-    private ArticleService articleService;
-    static private ArticleRepository articleRepository;
+    public ArticleRepository() {
 
-
-    private ArticleRepository() {
-        final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .readTimeout(ApiConstants.READ_TIMEOUT, TimeUnit.SECONDS)
-                .connectTimeout(ApiConstants.CONNECT_TIMEOUT, TimeUnit.SECONDS)
-                .build();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(ApiConstants.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(okHttpClient)
-                .build();
-        articleService = retrofit.create(ArticleService.class);
-    }
-
-    public synchronized static ArticleRepository getInstance() {
-        if (articleRepository == null) {
-            if (articleRepository == null) {
-                articleRepository = new ArticleRepository();
-            }
-        }
-        return articleRepository;
     }
 
     public LiveData<ArticleResponse> getArticleList(final Context context) {
         final MutableLiveData<ArticleResponse> responseData = new MutableLiveData<>();
-        articleService.getProjectList(ApiConstants.SOURCE, ApiConstants.API_KEY).enqueue(new Callback<ArticleResponse>() {
+        RetrofitClient.getApiService().getProjectList(ApiConstants.SOURCE, ApiConstants.API_KEY).enqueue(new Callback<ArticleResponse>() {
             ArticleResponse articleResponse = new ArticleResponse();
             @Override
             public void onResponse(Call<ArticleResponse> call, Response<ArticleResponse> response) {

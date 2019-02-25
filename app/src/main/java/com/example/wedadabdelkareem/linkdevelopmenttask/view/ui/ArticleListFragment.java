@@ -1,26 +1,18 @@
 package com.example.wedadabdelkareem.linkdevelopmenttask.view.ui;
 
-import android.app.SearchManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.SearchView;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import com.example.wedadabdelkareem.linkdevelopmenttask.databinding.FragmentArticleListBinding;
 import com.example.wedadabdelkareem.linkdevelopmenttask.R;
-import com.example.wedadabdelkareem.linkdevelopmenttask.service.model.Article;
 import com.example.wedadabdelkareem.linkdevelopmenttask.service.model.ArticleResponse;
 import com.example.wedadabdelkareem.linkdevelopmenttask.util.ConnectionLiveData;
 import com.example.wedadabdelkareem.linkdevelopmenttask.util.ConnectionModel;
@@ -29,16 +21,22 @@ import com.example.wedadabdelkareem.linkdevelopmenttask.view.adapter.ArticleList
 import com.example.wedadabdelkareem.linkdevelopmenttask.view.callback.ArticleClickCallBack;
 import com.example.wedadabdelkareem.linkdevelopmenttask.viewmodel.ArticleListViewModel;
 
-import java.util.ArrayList;
-import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 
-public class ArticleListFragment extends Fragment {
+public class ArticleListFragment extends BaseFragment {
     private ArticleListAdapter articleListAdapter;
-    private FragmentArticleListBinding fragmentArticleListBinding;
     private ArticleClickCallBack articleClickCallBack;
     private ConnectionLiveData connectionLiveData;
     private ArticleListViewModel articleListViewModel;
+    private Unbinder unbinder;
+    @BindView(R.id.loginProgress)
+    ProgressBar loginProgress;
+    @BindView(R.id.article_list)
+    RecyclerView articleRecyclerView;
     public ArticleListFragment() {
         // Required empty public constructor
     }
@@ -58,15 +56,15 @@ public class ArticleListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+        //setHasOptionsMenu(true);
     }
 
-    private void observeViewModel() {
+    private void bindData() {
         // update list when get data
-        articleListViewModel.getArticleListObservable().observe(this, new Observer<ArticleResponse>() {
+        articleListViewModel.getArticleListObservable(getActivity()).observe(this, new Observer<ArticleResponse>() {
             @Override
             public void onChanged(@Nullable ArticleResponse articleResponse) {
-                fragmentArticleListBinding.loginProgress.setVisibility(View.GONE);
+                 loginProgress.setVisibility(View.GONE);
                 if (articleResponse.getMessage().equals(Constants.SUCCESS) && articleResponse.getArticles() != null) {
                     articleListAdapter.setArticleList(articleResponse.getArticles());
                 } else if (articleResponse.getArticles() == null) {
@@ -84,7 +82,7 @@ public class ArticleListFragment extends Fragment {
         connectionLiveData = new ConnectionLiveData(getActivity());
         observeOnNetworkConnection();
         articleListViewModel = ViewModelProviders.of(this).get(ArticleListViewModel.class);
-        observeViewModel();
+        bindData();
     }
 
     //observer on connection
@@ -94,7 +92,7 @@ public class ArticleListFragment extends Fragment {
             public void onChanged(@Nullable ConnectionModel connection) {
                 if (!connection.getIsConnected()) {
                     Toast.makeText(getContext(), getActivity().getResources().getString(R.string.networkErrorCode), Toast.LENGTH_SHORT).show();
-                    fragmentArticleListBinding.loginProgress.setVisibility(View.GONE);
+                    loginProgress.setVisibility(View.GONE);
                 }
             }
         });
@@ -104,11 +102,12 @@ public class ArticleListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        fragmentArticleListBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_article_list, container, false);
-        fragmentArticleListBinding.articleList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        View view = inflater.inflate(R.layout.fragment_article_list,container,false);
+        unbinder = ButterKnife.bind(this,view);
+        articleRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         articleListAdapter = new ArticleListAdapter(articleClickCallBack, getActivity());
-        fragmentArticleListBinding.articleList.setAdapter(articleListAdapter);
-        return (View) fragmentArticleListBinding.getRoot();
+        articleRecyclerView.setAdapter(articleListAdapter);
+        return view;
     }
 
     @Override
@@ -119,46 +118,13 @@ public class ArticleListFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
-        if (null == getActivity())
-            return;
-        SearchView searchView;
-        // Associate searchable configuration with the SearchView
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView) menu.findItem(R.id.action_search)
-                .getActionView();
-        searchView.setSearchableInfo(searchManager
-                .getSearchableInfo(getActivity().getComponentName()));
-        // listening to search query text change
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                // filter recycler view when query submitted
-                showFlightData(query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String query) {
-                // filter recycler view when text is changed
-                showFlightData(query);
-                return false;
-            }
-        });
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    private void showFlightData(String query){
+    public void filterData(String query) {
         articleListAdapter.setFilter(articleListViewModel.getArticleFilterList(query).getValue());
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_search) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }
