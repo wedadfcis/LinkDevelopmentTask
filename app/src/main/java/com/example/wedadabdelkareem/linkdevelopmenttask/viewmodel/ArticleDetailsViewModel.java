@@ -2,22 +2,21 @@ package com.example.wedadabdelkareem.linkdevelopmenttask.viewmodel;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
+import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 
 import com.example.wedadabdelkareem.linkdevelopmenttask.service.model.Article;
 
 public class ArticleDetailsViewModel extends AndroidViewModel {
-    private Article selectedArticle;
+    private MutableLiveData<Article> selectedArticle = new MutableLiveData<>();
 
-    public void setSelectedArticle(Article selectedArticle) {
-        this.selectedArticle = selectedArticle;
-    }
-
-    public ArticleDetailsViewModel(@NonNull Application application) {
+    public ArticleDetailsViewModel(@NonNull Application application , Article selectedArticle) {
         super(application);
+        this.selectedArticle.setValue(selectedArticle);
     }
-
-    public Article getSelectedArticle() {
+    public MutableLiveData<Article> getArticleData()
+    {
         return selectedArticle;
     }
+
 }

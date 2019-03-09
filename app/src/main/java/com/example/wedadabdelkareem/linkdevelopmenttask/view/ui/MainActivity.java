@@ -1,36 +1,24 @@
 package com.example.wedadabdelkareem.linkdevelopmenttask.view.ui;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
 import com.example.wedadabdelkareem.linkdevelopmenttask.R;
-import com.example.wedadabdelkareem.linkdevelopmenttask.service.model.Article;
 import com.example.wedadabdelkareem.linkdevelopmenttask.util.Constants;
-import com.example.wedadabdelkareem.linkdevelopmenttask.view.callback.ArticleClickCallBack;
+import com.example.wedadabdelkareem.linkdevelopmenttask.util.Utilities;
+import com.example.wedadabdelkareem.linkdevelopmenttask.view.base.BaseActivity;
 
 public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ArticleClickCallBack {
+        implements NavigationView.OnNavigationItemSelectedListener {
     private ActionBarDrawerToggle toggle;
     private DrawerLayout drawer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // super.setContentView(R.layout.app_bar_main);
         setContentView(R.layout.activity_main);
         initNavigation();
         displayArticleListFragment();
@@ -49,7 +37,7 @@ public class MainActivity extends BaseActivity
     private void displayArticleListFragment() {
         /// add fragment
         ArticleListFragment articleListFragment = new ArticleListFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, articleListFragment, Constants.ARTICLE_LIST_TAG).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, articleListFragment, Constants.ARTICLE_LIST_TAG).commit();
     }
 
 
@@ -80,15 +68,15 @@ public class MainActivity extends BaseActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_explore) {
-            showToast(item.getTitle().toString());
+            Utilities.displayToast(item.getTitle().toString(),this);
         } else if (id == R.id.nav_livechat) {
-            showToast(item.getTitle().toString());
+            Utilities.displayToast(item.getTitle().toString(),this);
         } else if (id == R.id.nav_gallery) {
-            showToast(item.getTitle().toString());
+            Utilities.displayToast(item.getTitle().toString(),this);
         } else if (id == R.id.nav_wishlist) {
-            showToast(item.getTitle().toString());
+            Utilities.displayToast(item.getTitle().toString(),this);
         } else if (id == R.id.nav_emagazine) {
-            showToast(item.getTitle().toString());
+            Utilities.displayToast(item.getTitle().toString(),this);
         }
 
         //close drawer after select item
@@ -96,15 +84,7 @@ public class MainActivity extends BaseActivity
         return true;
     }
 
-    public void showToast(String selectedItemTitle) {
-        Toast.makeText(this, selectedItemTitle, Toast.LENGTH_SHORT).show();
-    }
 
-    @Override
-    public void onClick(Article article) {
-        // navigate to article details
-        Intent intent = new Intent(this,ArticleDetailsActivity.class);
-        intent.putExtra(Constants.ARTICLE,article);
-        startActivity(intent);
-    }
+
+
 }

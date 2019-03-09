@@ -8,16 +8,16 @@ import android.view.MenuItem;
 import com.example.wedadabdelkareem.linkdevelopmenttask.R;
 import com.example.wedadabdelkareem.linkdevelopmenttask.service.model.Article;
 import com.example.wedadabdelkareem.linkdevelopmenttask.util.Constants;
+import com.example.wedadabdelkareem.linkdevelopmenttask.view.base.BaseActivity;
 import com.example.wedadabdelkareem.linkdevelopmenttask.viewmodel.ArticleDetailsViewModel;
+import com.example.wedadabdelkareem.linkdevelopmenttask.viewmodel.ArticleViewModelFactory;
 
 public class ArticleDetailsActivity extends BaseActivity {
     private ArticleDetailsViewModel articleDetailsViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        super.setContentView(R.layout.app_bar_main);
         setContentView(R.layout.activity_article_details);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setArticleData();
         displayArticleFragment();
 
@@ -25,17 +25,18 @@ public class ArticleDetailsActivity extends BaseActivity {
 
     private void setArticleData()
     {
-        articleDetailsViewModel = ViewModelProviders.of(this).get(ArticleDetailsViewModel.class);
         if (getIntent().getExtras().getParcelable(Constants.ARTICLE) != null) {
-            //set at view model
-            articleDetailsViewModel.setSelectedArticle((Article) getIntent().getExtras().getParcelable(Constants.ARTICLE));
+            //define ArticleViewFactory
+            ArticleViewModelFactory factory = new ArticleViewModelFactory(getApplication(),(Article) getIntent().getExtras().getParcelable(Constants.ARTICLE));
+            //define viewModel
+            articleDetailsViewModel = ViewModelProviders.of(this,factory).get(ArticleDetailsViewModel.class);
         }
     }
 
     private void displayArticleFragment()
     {
         ArticleDetailsFragment articleDetailsFragment = new ArticleDetailsFragment();
-        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container,articleDetailsFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,articleDetailsFragment).commit();
     }
 
     @Override

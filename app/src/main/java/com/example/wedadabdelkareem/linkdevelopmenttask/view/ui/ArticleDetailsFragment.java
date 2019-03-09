@@ -1,5 +1,6 @@
 package com.example.wedadabdelkareem.linkdevelopmenttask.view.ui;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -16,7 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.wedadabdelkareem.linkdevelopmenttask.R;
+import com.example.wedadabdelkareem.linkdevelopmenttask.service.model.Article;
 import com.example.wedadabdelkareem.linkdevelopmenttask.view.adapter.ImageAndDateLoader;
+import com.example.wedadabdelkareem.linkdevelopmenttask.view.base.BaseFragment;
 import com.example.wedadabdelkareem.linkdevelopmenttask.viewmodel.ArticleDetailsViewModel;
 
 import butterknife.BindView;
@@ -68,21 +71,33 @@ public class ArticleDetailsFragment extends BaseFragment {
     }
 
     public void bindData() {
-        //set article data
-        ImageAndDateLoader.loadImage(articleImage,articleDetailsViewModel.getSelectedArticle().getUrlToImage());
-        articleTitle.setText(articleDetailsViewModel.getSelectedArticle().getTitle());
-        articleDescription.setText(articleDetailsViewModel.getSelectedArticle().getDescription());
-        ImageAndDateLoader.loadDate(publishAt,articleDetailsViewModel.getSelectedArticle().getPublishedAt());
+        //observe on article data changes
+        articleDetailsViewModel.getArticleData().observe(this, new Observer<Article>() {
+            @Override
+            public void onChanged(@Nullable Article article) {
+                ImageAndDateLoader.loadImage(articleImage,article.getUrlToImage());
+                articleTitle.setText(article.getTitle());
+                articleDescription.setText(article.getDescription());
+                ImageAndDateLoader.loadDate(publishAt,article.getPublishedAt());
+            }
+        });
+
     }
     @OnClick(R.id.open_website)
     void openWebsite() {
-        try {
-            Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(articleDetailsViewModel.getSelectedArticle().getUrl()));
-            startActivity(myIntent);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(getActivity(), getActivity().getString(R.string.fail_open_url), Toast.LENGTH_LONG).show();
-            e.printStackTrace();
-        }
+        articleDetailsViewModel.getArticleData().observe(this, new Observer<Article>() {
+            @Override
+            public void onChanged(@Nullable Article article) {
+                try {
+                    Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(articleDetailsViewModel.getArticleData().getValue().getUrl()));
+                    startActivity(myIntent);
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(getActivity(), getActivity().getString(R.string.fail_open_url), Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
 
     @Override
@@ -94,11 +109,6 @@ public class ArticleDetailsFragment extends BaseFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-    }
-
-    @Override
-    public void filterData(String query) {
-
     }
 
     @Override

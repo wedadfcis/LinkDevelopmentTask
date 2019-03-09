@@ -6,8 +6,6 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.widget.Filter;
-import android.widget.Filterable;
 
 import com.example.wedadabdelkareem.linkdevelopmenttask.service.model.Article;
 import com.example.wedadabdelkareem.linkdevelopmenttask.service.model.ArticleResponse;
@@ -33,7 +31,7 @@ public class ArticleListViewModel extends AndroidViewModel {
         filterArticleList = new MutableLiveData<>();
         List<Article> filteredList = new ArrayList<>();
         filteredList.clear();
-      if(articleListObservable.getValue().getArticles().size()>0) {
+      if(articleListObservable.getValue().getArticles() != null) {
           if (!query.isEmpty() || !query.equals("")) {
               for (Article currentArticle : articleListObservable.getValue().getArticles()) {
                   // filter with author name
