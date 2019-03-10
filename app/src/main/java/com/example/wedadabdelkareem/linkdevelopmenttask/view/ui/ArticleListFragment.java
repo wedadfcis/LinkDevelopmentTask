@@ -25,6 +25,7 @@ import com.example.wedadabdelkareem.linkdevelopmenttask.service.model.ArticleRes
 import com.example.wedadabdelkareem.linkdevelopmenttask.util.ConnectionLiveData;
 import com.example.wedadabdelkareem.linkdevelopmenttask.util.ConnectionModel;
 import com.example.wedadabdelkareem.linkdevelopmenttask.util.Constants;
+import com.example.wedadabdelkareem.linkdevelopmenttask.util.Utilities;
 import com.example.wedadabdelkareem.linkdevelopmenttask.view.adapter.ArticleListAdapter;
 import com.example.wedadabdelkareem.linkdevelopmenttask.view.base.BaseFragment;
 import com.example.wedadabdelkareem.linkdevelopmenttask.view.callback.ArticleClickCallBack;
@@ -104,7 +105,7 @@ public class ArticleListFragment extends BaseFragment implements ArticleClickCal
             @Override
             public void onChanged(@Nullable ConnectionModel connection) {
                 if (!connection.getIsConnected()) {
-                    Toast.makeText(getContext(), getActivity().getResources().getString(R.string.networkErrorCode), Toast.LENGTH_SHORT).show();
+                    Utilities.displayToast(getActivity().getResources().getString(R.string.networkErrorCode),getContext());
                     loginProgress.setVisibility(View.GONE);
                 }
             }

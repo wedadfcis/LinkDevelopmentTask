@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.wedadabdelkareem.linkdevelopmenttask.R;
 import com.example.wedadabdelkareem.linkdevelopmenttask.service.model.Article;
+import com.example.wedadabdelkareem.linkdevelopmenttask.util.Utilities;
 import com.example.wedadabdelkareem.linkdevelopmenttask.view.adapter.ImageAndDateLoader;
 import com.example.wedadabdelkareem.linkdevelopmenttask.view.base.BaseFragment;
 import com.example.wedadabdelkareem.linkdevelopmenttask.viewmodel.ArticleDetailsViewModel;
@@ -92,7 +93,7 @@ public class ArticleDetailsFragment extends BaseFragment {
                     Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(articleDetailsViewModel.getArticleData().getValue().getUrl()));
                     startActivity(myIntent);
                 } catch (ActivityNotFoundException e) {
-                    Toast.makeText(getActivity(), getActivity().getString(R.string.fail_open_url), Toast.LENGTH_LONG).show();
+                    Utilities.displayToast(getActivity().getString(R.string.fail_open_url),getActivity());
                     e.printStackTrace();
                 }
             }
