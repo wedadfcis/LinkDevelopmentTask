@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:drawable="@color/black"
-        android:state_checked="true"
-        >
-        <item
-            android:drawable="@android:color/transparent"
-            android:state_checked = "false"
-            />
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:gravity="right">
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+            <solid android:color="@android:color/transparent" />
+        </shape>
     </item>
-</selector>
+    <item android:gravity="left">
+        <shape android:shape="rectangle">
+            <size android:width="@dimen/vertical_bar" />
+            <solid android:color="@color/black" />
+        </shape>
+    </item>
+</layer-list>
+
+

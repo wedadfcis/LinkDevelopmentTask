@@ -17,8 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
-import android.widget.Toast;
-
 import com.example.wedadabdelkareem.linkdevelopmenttask.R;
 import com.example.wedadabdelkareem.linkdevelopmenttask.service.model.Article;
 import com.example.wedadabdelkareem.linkdevelopmenttask.service.model.ArticleResponse;
@@ -71,7 +69,7 @@ public class ArticleListFragment extends BaseFragment implements ArticleClickCal
                 if (articleResponse.getMessage().equals(Constants.SUCCESS) && articleResponse.getArticles() != null) {
                     articleListAdapter.setArticleList(articleResponse.getArticles());
                 } else if (articleResponse.getArticles() == null) {
-                    Toast.makeText(getActivity(), articleResponse.getMessage(), Toast.LENGTH_LONG).show();
+                    Utilities.displayToast(articleResponse.getMessage(),getActivity());
                 }
             }
         });

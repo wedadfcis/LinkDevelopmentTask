@@ -8,14 +8,17 @@ import android.support.annotation.NonNull;
 import com.example.wedadabdelkareem.linkdevelopmenttask.service.model.Article;
 
 public class ArticleDetailsViewModel extends AndroidViewModel {
+    private Article article;
     private MutableLiveData<Article> selectedArticle = new MutableLiveData<>();
 
     public ArticleDetailsViewModel(@NonNull Application application , Article selectedArticle) {
         super(application);
-        this.selectedArticle.setValue(selectedArticle);
+        this.article = selectedArticle;
+
     }
     public MutableLiveData<Article> getArticleData()
     {
+        selectedArticle.setValue(article);
         return selectedArticle;
     }
 
